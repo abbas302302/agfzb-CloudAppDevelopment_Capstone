@@ -5,21 +5,6 @@ from django.utils.timezone import now
 
 # Create your models here.
 
-# <HINT> Create a Car Make model `class CarMake(models.Model)`:
-# - Name
-# - Description
-# - Any other fields you would like to include in car make model
-# - __str__ method to print a car make object
-
-
-# <HINT> Create a Car Model model `class CarModel(models.Model):`:
-# - Many-To-One relationship to Car Make model (One Car Make has many Car Models, using ForeignKey field)
-# - Name
-# - Dealer id, used to refer a dealer created in cloudant database
-# - Type (CharField with a choices argument to provide limited choices such as Sedan, SUV, WAGON, etc.)
-# - Year (DateField)
-# - Any other fields you would like to include in car model
-# - __str__ method to print a car make object
 class CarMake(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
@@ -51,6 +36,7 @@ class CarModel(models.Model):
     def __str__(self):
             return f'CarModel name : {self.name}, {str(self.car_make)}, dealer_id: {self.dealer_id}, type: {self.type}, year: {str(self.year)}'
 
+
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 class CarDealer:
 
@@ -68,6 +54,7 @@ class CarDealer:
     def __str__(self):
         return "Dealer name: " + self.full_name
 
+
 # <HINT> Create a plain Python class `DealerReview` to hold review data
 class DealerReview:
     def __init__(self, dealership, name, purchase, review, purchase_date, car_make, car_model, car_year, id):
@@ -81,3 +68,16 @@ class DealerReview:
         self.car_year = car_year
         self.sentiment = None
         self.id = id
+    
+    #
+    @property            # first decorate the getter method
+    def sentiment(self): # This getter method name is *the* name
+        return self._sentiment
+    #
+    @sentiment.setter    # the property decorates with `.setter` now
+    def sentiment(self, value):   # name, e.g. "attribute", is the same
+        self._sentiment = value   # the "value" name isn't special
+    #
+    @sentiment.deleter     # decorate with `.deleter`
+    def sentiment(self):   # again, the method name is the same
+        del self._sentiment

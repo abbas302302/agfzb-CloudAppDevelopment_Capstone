@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> 
     <title>Dealership Review</title>
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -9,9 +9,58 @@
 
     <body>
 
-    <!--Add a nav bar here -->
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Dealership Review</a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li>
+                        <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+                        <a class="btn btn-link" href="{% url 'djangoapp:logout_request' %}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <form class="form-inline" action="{% url 'djangoapp:login_request' %}" method="post">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Username" name="username" >
+                                <input type="password" class="form-control" placeholder="Password" name="psw" >
+                                <button class="btn btn-primary" type="submit">Login</button>
+                                <a class="btn btn-link" href="{% url 'djangoapp:registration_request' %}">Sign Up</a>
+                            </div>
+                        </form>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
 
-    <!-- Add reviews as cards -->
+        <!-- Add reviews as cards -->
+        {% if user.is_authenticated %}
+        <a class="btn btn-primary m-3" href="{% url 'djangoapp:add_review' dealer_id %}">Add Review</a>
+        {% endif %}
+
+        <h2>Reviews for <b>{{ dealer_name }}</b></h2>
+        {% if reviews_list|length == 0 %}
+        <div class="container m-5"><h2>No reviews for this dealer</h2></div>
+        {% else %}
+        <div class="card-columns">
+            {% for review in reviews_list %}
+            <div class="card">
+                <img class="card-img-left m-2" width="30" src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png">
+                <div class="card-body bg-light">
+                    {% if review.car_model != "" %}
+                    <div class="card-title"><b>{{ review.car_model }}, {{ review.car_make }}</b></div>
+                    {% endif %}
+                    <div class="card-title"><b>{{ review.purchase_year|date:"Y" }}</b></div>
+                    <div class="card-text">{{ review.review }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
     </body>
 

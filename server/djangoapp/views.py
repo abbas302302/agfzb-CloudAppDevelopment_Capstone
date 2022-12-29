@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 #from .models import related models
+from .models import CarMake, CarModel
+from .restapis import get_dealer_by_id_from_cf, get_dealer_reviews_from_cf, get_dealers_from_cf
 #from .restapis import related methods
 from .restapis import get_request, get_dealers_from_cf
 from django.contrib.auth import login, logout, authenticate
@@ -84,7 +86,7 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         context = {"reviews_list":[]}
-        baseUrl = "https://us-south.functions.appdomain.cloud/api/v1/web/f446558e-994f-4be2-829f-08ca67ac4254/dealership/get-review"
+        baseUrl = "https://us-south.functions.appdomain.cloud/api/v1/web/f446558e-994f-4be2-829f-08ca67ac4254/dealership/get-dealership"
         url = f'{baseUrl}/review'
         reviews = get_dealer_reviews_from_cf(url, dealer_id)
         if len(reviews)>0:
@@ -126,7 +128,7 @@ def add_review(request, dealer_id):
 
     if request.method == "GET":
         print(request)
-        baseUrl = "https://us-south.functions.appdomain.cloud/api/v1/web/f446558e-994f-4be2-829f-08ca67ac4254/dealership/get-review"
+        baseUrl = "https://us-south.functions.appdomain.cloud/api/v1/web/f446558e-994f-4be2-829f-08ca67ac4254/dealership/get-dealership"
         context = {}
         cars = CarModel.objects.filter(dealer_id=dealer_id)
         context["cars"] = cars
